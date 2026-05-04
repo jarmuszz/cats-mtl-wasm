@@ -33,7 +33,7 @@ lazy val commonNativeSettings = Seq(
   tlVersionIntroduced := commonNativeTlVersionIntroduced
 )
 
-val CatsVersion = "2.13.0"
+val CatsVersion = "2.13-WASM"
 
 lazy val root = tlCrossRootProject.aggregate(core, laws, tests, unidocs)
 
@@ -63,8 +63,8 @@ lazy val tests = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(
     libraryDependencies ++= Seq(
       "org.typelevel" %%% "cats-testkit" % CatsVersion,
-      "org.scalameta" %%% "munit" % "1.0.0",
-      "org.typelevel" %%% "discipline-munit" % "2.0.0"))
+      "org.scalameta" %%% "munit" % "1.3.0-WASM",
+      "org.typelevel" %%% "discipline-munit" % "2.0-WASM"))
   .jsSettings(commonJsSettings)
   .jvmSettings(commonJvmSettings)
   .nativeSettings(commonNativeSettings)
