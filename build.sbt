@@ -16,6 +16,8 @@ val Scala213 = "2.13.18"
 ThisBuild / crossScalaVersions := Seq("3.3.6", "2.12.21", Scala213)
 ThisBuild / tlVersionIntroduced := Map("3" -> "1.2.1")
 
+ThisBuild / resolvers += "central-snapshots" at "https://central.sonatype.com/repository/maven-snapshots/"
+
 lazy val commonJvmSettings = Seq(
   Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oDF")
 )
