@@ -13,7 +13,7 @@ ThisBuild / developers := List(
 
 val Scala213 = "2.13.18"
 
-ThisBuild / crossScalaVersions := Seq("3.3.6", "2.12.21", Scala213)
+ThisBuild / crossScalaVersions := Seq("3.3.8", "2.12.21", Scala213)
 ThisBuild / tlVersionIntroduced := Map("3" -> "1.2.1")
 
 ThisBuild / resolvers += "central-snapshots" at "https://central.sonatype.com/repository/maven-snapshots/"
@@ -65,7 +65,7 @@ lazy val tests = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(
     libraryDependencies ++= Seq(
       "org.typelevel" %%% "cats-testkit" % CatsVersion,
-      "org.scalameta" %%% "munit" % "1.3.0-WASM",
+      "org.scalameta" %%% "munit" % "1.3.3-WASM",
       "org.typelevel" %%% "discipline-munit" % "2.0-WASM"))
   .jsSettings(commonJsSettings)
   .jvmSettings(commonJvmSettings)
