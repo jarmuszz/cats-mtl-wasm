@@ -71,16 +71,45 @@ lazy val tests = crossProject(JSPlatform, JVMPlatform, NativePlatform)
       "org.typelevel" %%% "discipline-munit" % "2.0.0-WASM"))
   .jsSettings(
     commonJsSettings,
-    Compile / scalaJSLinkerConfig := { (Compile /scalaJSLinkerConfig).value
-      .withPrettyPrint(true)
-      .withESFeatures { features =>
-        features
-          .withUseWebAssembly(true)
-          .withESVersion(ESVersion.ES2022)
-      }
-      .withModuleKind(ModuleKind.WasmComponent)
+    Compile / scalaJSLinkerConfig := {
+      import org.scalajs.linker.interface.ESVersion
+      if (System.getenv("CATS_MTL_JS_ENV") == "wasmtime") {
+        (Compile / scalaJSLinkerConfig).value
+          .withPrettyPrint(true)
+          .withESFeatures { _
+            .withESVersion(ESVersion.ES2022)
+            .withUseWebAssembly(true)
+          }
+          .withWasmFeatures { _
+            .withWitDirectory(None)
+            .withWitWorld(None)
+          }
+          .withModuleKind(ModuleKind.WasmComponent)
+      } else {
+        (Compile / scalaJSLinkerConfig).value
     },
-    jsEnv := new WasmtimeEnv()
+    jsEnv := {
+      val log = sLog.value
+      if (System.getenv("CATS_MTL_JS_ENV") == "wasmtime") {
+        log.info("Testing in WasmtimeEnv")
+        val cfg = org.scalajs.jsenv.wasmtime.WasmtimeEnv.Config()
+          .withArgs(List(
+            "run",
+            "-W", "gc,function-references,exceptions",
+            "--dir", ".",
+            "-S", "cli",
+            "-S", "inherit-env",
+            "-S", "inherit-network",
+            "-S", "tcp",
+            "-S", "http"
+            ))
+          .withEnv(envVars.value)
+        new org.scalajs.jsenv.wasmtime.WasmtimeEnv(cfg)
+      } else {
+        log.info("Testing in NodeJSEnv")
+        new org.scalajs.jsenv.nodejs.NodeJSEnv
+      }
+    }
   )
   .jvmSettings(commonJvmSettings)
   .nativeSettings(commonNativeSettings)
