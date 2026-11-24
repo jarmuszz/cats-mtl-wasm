@@ -1,5 +1,4 @@
-addSbtPlugin("io.github.scala-wasm" % "sbt-scalajs" % "1.22.0-wasm.4")
-addSbtPlugin("org.scala-js" % "sbt-scalajs" % "1.22.0")
+addSbtPlugin("io.github.scala-wasm" % "sbt-scalajs" % "1.22.1-wasm.6")
 addSbtPlugin("io.github.sbt-doctest" % "sbt-doctest" % "0.13.2")
 addSbtPlugin("org.typelevel" % "sbt-typelevel" % "0.8.7")
 addSbtPlugin("org.typelevel" % "sbt-typelevel-site" % "0.8.7")

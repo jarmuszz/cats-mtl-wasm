@@ -1,6 +1,6 @@
 // import laika.helium.config._
 import laika.config.{ChoiceConfig, SelectionConfig, Selections}
-ThisBuild / version := "1.7-WASM"
+ThisBuild / version := "1.7.0-WASM"
 ThisBuild / startYear := Some(2021)
 ThisBuild / developers := List(
   tlGitHubDev("SystemFw", "Fabio Labella"),
@@ -35,7 +35,7 @@ lazy val commonNativeSettings = Seq(
   tlVersionIntroduced := commonNativeTlVersionIntroduced
 )
 
-val CatsVersion = "2.13-WASM"
+val CatsVersion = "2.13.0-WASM"
 
 lazy val root = tlCrossRootProject.aggregate(core, laws, tests, unidocs)
 
@@ -58,6 +58,8 @@ lazy val laws = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .jvmSettings(commonJvmSettings)
   .nativeSettings(commonNativeSettings)
 
+import org.scalajs.jsenv.wasmtime.WasmtimeEnv
+import org.scalajs.linker.interface.ESVersion
 lazy val tests = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .dependsOn(core, laws)
   .enablePlugins(NoPublishPlugin)
@@ -65,9 +67,21 @@ lazy val tests = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(
     libraryDependencies ++= Seq(
       "org.typelevel" %%% "cats-testkit" % CatsVersion,
-      "org.scalameta" %%% "munit" % "1.3.5-WASM",
-      "org.typelevel" %%% "discipline-munit" % "2.0-WASM"))
-  .jsSettings(commonJsSettings)
+      "org.scalameta" %%% "munit" % "1.3.6-WASM",
+      "org.typelevel" %%% "discipline-munit" % "2.0.0-WASM"))
+  .jsSettings(
+    commonJsSettings,
+    Compile / scalaJSLinkerConfig := { (Compile /scalaJSLinkerConfig).value
+      .withPrettyPrint(true)
+      .withESFeatures { features =>
+        features
+          .withUseWebAssembly(true)
+          .withESVersion(ESVersion.ES2022)
+      }
+      .withModuleKind(ModuleKind.WasmComponent)
+    },
+    jsEnv := new WasmtimeEnv()
+  )
   .jvmSettings(commonJvmSettings)
   .nativeSettings(commonNativeSettings)
 
