@@ -13,7 +13,7 @@ ThisBuild / developers := List(
 
 val Scala213 = "2.13.18"
 
-ThisBuild / crossScalaVersions := Seq("3.3.8", "2.12.21", Scala213)
+ThisBuild / crossScalaVersions := Seq("3.3.9", "2.12.21", Scala213)
 ThisBuild / tlVersionIntroduced := Map("3" -> "1.2.1")
 
 ThisBuild / resolvers += "central-snapshots" at "https://central.sonatype.com/repository/maven-snapshots/"
@@ -87,6 +87,7 @@ lazy val tests = crossProject(JSPlatform, JVMPlatform, NativePlatform)
           .withModuleKind(ModuleKind.WasmComponent)
       } else {
         (Compile / scalaJSLinkerConfig).value
+      }
     },
     jsEnv := {
       val log = sLog.value
@@ -129,7 +130,7 @@ lazy val docs = project
     scalaVersion := "3.3.4",
     tlFatalWarnings := false,
     laikaConfig ~= {
-      _.withConfigValue(
+      _.withRawContent.withConfigValue(
         Selections(
           SelectionConfig(
             "scala-version",
